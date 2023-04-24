@@ -14,10 +14,10 @@ services:
     container_name: kong
     environment:
       KONG_DATABASE: postgres
-      KONG_PG_HOST: host.docker.internal
+      KONG_PG_HOST: host.docker.internal #localhost
       KONG_PG_PORT: 5432
       KONG_PG_USER: postgres
-      KONG_PG_PASSWORD: 
+      KONG_PG_PASSWORD: #senha do PG para o usuario
       KONG_PG_DATABASE: kong
       KONG_PROXY_LISTEN: 0.0.0.0:8000
       KONG_PROXY_LISTEN_SSL: 0.0.0.0:8443
@@ -47,10 +47,10 @@ services:
       DB_HOST: host.docker.internal
       DB_PORT: 5432
       DB_USER: postgres
-      DB_PASSWORD:
+      DB_PASSWORD: #senha do usuario
       DB_DATABASE: konga
       TOKEN_SECRET:
-      NODE_ENV: production
+      NODE_ENV: production # primeira vez subir como "dev" para rodar as migrations
     extra_hosts:
     - "host.docker.internal:host-gateway"
     networks:
