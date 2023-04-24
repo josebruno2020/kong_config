@@ -1,0 +1,72 @@
+version: "3"
+
+networks:
+ kong-net:
+  driver: bridge
+
+services:
+  #######################################
+  # Kong
+  #######################################
+  kong:
+    image: kong:latest
+    restart: always
+    container_name: kong
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: host.docker.internal
+      KONG_PG_PORT: 5432
+      KONG_PG_USER: postgres
+      KONG_PG_PASSWORD: 
+      KONG_PG_DATABASE: kong
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_PROXY_LISTEN_SSL: 0.0.0.0:8443
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    networks:
+      - kong-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://kong:8001"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    expose:
+      - 8000
+      - 8001
+
+  #######################################
+  # Konga: Kong GUI
+  #######################################
+  konga:
+    image: pantsel/konga:next
+    restart: always
+    container_name: konga
+    environment:
+      DB_ADAPTER: postgres
+      DB_HOST: host.docker.internal
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD:
+      DB_DATABASE: konga
+      TOKEN_SECRET:
+      NODE_ENV: production
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
+    networks:
+      - kong-net
+    expose:
+      - 1337
+
+  #######################################
+  # NGINX - Reverse Proxy
+  #######################################
+  nginx:
+    build: ./nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    container_name: nginx
+    networks:
+      - kong-net

@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  #######################################
+  # Kong migration
+  #######################################
+  kong-migration:
+    image: kong:latest
+    command: "kong migrations bootstrap"
+    restart: on-failure
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: host.docker.internal
+      KONG_PG_PORT: 5432
+      KONG_PG_USER: postgres
+      KONG_PG_PASSWORD:
+      KONG_PG_DATABASE: kong
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
