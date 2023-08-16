@@ -51,6 +51,7 @@ services:
       DB_DATABASE: konga
       TOKEN_SECRET:
       NODE_ENV: production # primeira vez subir como "dev" para rodar as migrations
+      PORT: 1337
     extra_hosts:
     - "host.docker.internal:host-gateway"
     networks:
